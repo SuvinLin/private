@@ -80,8 +80,14 @@
   ````
   https://www.zhihu.com/search?q={query}
   ````
+  
+- Github 搜索仓库
 
+  ````
+  https://github.com/search?q={query}&amp;ref=opensearch
+  ````
 
+  
 
 #### 	Web Bookmarks
 

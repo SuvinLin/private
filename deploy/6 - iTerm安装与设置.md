@@ -114,25 +114,6 @@ alias ios="sudo killall -STOP -c usbd"
 alias proxy='export http_proxy=http://127.0.0.1:1087 https_proxy=http://12    7.0.0.1:1087'
 alias unproxy='unset http_proxy https_proxy'
 
-# trojan-qt5 on/off
-function tro() {
-	# 配置http访问的
-	export http_proxy=socks5://127.0.0.1:1080
-	# 配置https访问的
-	export https_proxy=socks5://127.0.0.1:1080
-	# 配置http和https访问
-	export all_proxy=socks5://127.0.0.1:1080
-	echo ' 开启当前终端代理 '
-}
-
-function untro() {
-	# 移除代理
-	unset http_proxy
-	unset https_proxy
-	unset all_proxy
-	echo ' 关闭当前终端代理 '
-}
-
 # 关闭Homebrew 自动更新
 export HOMEBREW_NO_AUTO_UPDATE=true
 ````
@@ -141,7 +122,7 @@ export HOMEBREW_NO_AUTO_UPDATE=true
 
 #### 首选项设置
 
-##### General → Closing → 仅勾选（Quit when ...）
+General → Closing → 仅勾选（Quit when ...）
 
 
 
