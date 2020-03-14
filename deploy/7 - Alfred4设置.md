@@ -89,6 +89,16 @@
 
 
 
+#### Clipboard History
+
+![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/clipboard setting-1.png)
+
+![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/clipboard setting-2.png)
+
+![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/clipboard setting-3.png)
+
+
+
 #### 	Terminal
 
 ​	Application → 选择（Custom）→ 并键入下面代码
