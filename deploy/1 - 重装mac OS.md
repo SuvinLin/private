@@ -76,7 +76,9 @@ $ sudo /Applications/Install\ OS\ X\ El\ Capitan.app/Contents/Resources/createin
 
 [如何创建可引导的 mac OS 安装器](https://support.apple.com/zh-cn/HT201372)
 
+<br />
 
+<br />
 
 ## 使用可引导的 macOS 安装器重装
 
@@ -128,9 +130,9 @@ $ sudo /Applications/Install\ OS\ X\ El\ Capitan.app/Contents/Resources/createin
 
    ![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/选择安装磁盘.jpeg)
 
+<br />
 
-
-
+<br />
 
 ## macOS 重装问题
 
