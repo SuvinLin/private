@@ -66,8 +66,10 @@ $ sudo /Applications/Install\ OS\ X\ El\ Capitan.app/Contents/Resources/createin
 
 8. 出现如下提示，表示制作成功
 
-   ![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/macOS 安装器制作完成.png)
+   ![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/macOS安装器制作完成.png)
 
+   
+   
    
 
 ### 参考链接
@@ -90,7 +92,7 @@ $ sudo /Applications/Install\ OS\ X\ El\ Capitan.app/Contents/Resources/createin
 
 4. 读条后出现 **macOS实用工具**
 
-   ![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/mac OS 实用工具.jpeg)
+   ![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/macOS实用工具.jpeg)
 
    
 
@@ -125,6 +127,8 @@ $ sudo /Applications/Install\ OS\ X\ El\ Capitan.app/Contents/Resources/createin
    ![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/step-3.jpeg)
 
    ![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/选择安装磁盘.jpeg)
+
+
 
 
 
