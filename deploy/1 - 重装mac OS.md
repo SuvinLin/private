@@ -68,9 +68,10 @@ $ sudo /Applications/Install\ OS\ X\ El\ Capitan.app/Contents/Resources/createin
 
    ![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/macOS安装器制作完成.png)
 
-   
-   
-   
+
+<br />
+
+<br />
 
 ### 参考链接
 
