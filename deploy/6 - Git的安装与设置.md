@@ -1,26 +1,25 @@
-## 安装与替换
+## 安装与替换Git
 
-mac OS 系统中 Xcode 自带 Git ，但版本有些过时
+macOS 系统中 Xcode 自带 Git ，但版本有些过时
 
 若想使用新版本的 Git ，则需要通过安装新版本的 Git 来替代系统默认
 
-
+<br />
 
 ### 通过 Homebrew 安装最新的 Git 版本
 
 **查看 Xcode  Git 版本与指向**
 
 ````shell
-git --version	 # git version 2.21.1 (Apple Git-122.3)
-which git			 # /usr/bin/git（该 路径下的 git 是系统默认的 git）
+$ git --version  # git version 2.21.1 (Apple Git-122.3)
+$ which git  # /usr/bin/git（该 路径下的 git 是系统默认的 git）
 ````
 
 **通过 Homebrew 升级到最新的 Git 版本**
 
 ````shell
-brew install git		# 安装最新版本的 Git
-
-brew link git		# 将 brew 安装的 git 连接上
+$ brew install git  # 安装最新版本的 Git
+$ brew link git  # 将 brew 安装的 git 连接上,并会输入下面两行内容
 > Warning: Already linked: /usr/local/Cellar/git/x.xx.x
 > To relink: brew unlink git && brew link git
 ````
@@ -28,21 +27,37 @@ brew link git		# 将 brew 安装的 git 连接上
 **link 成功后，退出终端后，再次打开。然后查看 git 指向和版本信息**
 
 ````shell
-git --version		# git version 2.25.1
-which git				# /usr/local/bin/git
+$ git --version  # git version 2.25.1
+$ which git  # /usr/local/bin/git
 ````
 
-
+<br />
 
 ### 恢复系统默认 Git 的使用
 
 ````shell
-brew unlink git		# 解除 brew 与 git 的连接
-git --version			# git version 2.21.1 (Apple Git-122.3)
-which git					# /usr/bin/git
+$ brew unlink git		# 解除 brew 与 git 的连接
+$ git --version			# git version 2.21.1 (Apple Git-122.3)
+$ which git					# /usr/bin/git
 ````
 
+<br />
 
+## 初次运行 Git 前的配置
+
+终端键入如下命令
+
+````shell
+$ git config --global user.name "你的用户名"
+$ git config --global user.email 你的邮箱
+$ git config --global core.quotepath false  # 解决 git status 中的乱码
+$ git config --global i18n.commitEncoding utf-8  # 设置提交时, message 以什么编码保存
+$ git config --global i18n.logOutputEncoding utf-8  # 设置查看时, message 以什么编码传递给查看器
+````
+
+配置完后，通过 `git config --global --list ` 检查配置
+
+<br />
 
 ## SSH
 
@@ -73,9 +88,9 @@ which git					# /usr/bin/git
    > Enter same passphrase again: [Type passphrase again]
    ```
 
-4. 以上操作完成后，会在第 3 步确认的地址中生成一个 .ssh 文件夹，里面包含两个文件（id_rsa，id_rsa.pub）
+4. 以上操作完成后，会在第 2 步的文件位置中生成一个 .ssh 文件夹，里面包含两个文件（id_rsa，id_rsa.pub）
 
-
+<br />
 
 ### 新增 SSH 密钥到 GitHub 帐户
 
@@ -96,17 +111,16 @@ which git					# /usr/bin/git
 
 6. 填写 Title 字段并将密钥粘贴到 Key 字段
 
-7. Add SSH key
+7. 点击 Add SSH key 按钮进行添加
 
-
+<br />
 
 ### 测试 SSH 连接
 
 1. ````shell
-   $ ssh -T git@github.com
-   # 对 GitHub 尝试 ssh
+   $ ssh -T git@github.com  # 对 GitHub 尝试 ssh
    ````
-
+   
 2. 如果看到如下其中一种提示
 
    ````shell
@@ -132,13 +146,17 @@ which git					# /usr/bin/git
 
 4. 看到上面输出的 Hi... 这一段便表示成功了
 
+<br />
+
+<br />
+
 ### 参考链接
 
 [使用 SSH 连接到 GitHub](https://help.github.com/cn/github/authenticating-to-github/connecting-to-github-with-ssh)
 
+<br />
 
-
-## Git设置
+## Git  其他设置
 
 ### 将 git 中提示信息设回英文
 
@@ -147,49 +165,26 @@ which git					# /usr/bin/git
 **普通命令行（bash）**
 
 ```shell
-echo "alias git='LANG=en_GB git'" >> ~/.bashrc
+$ echo "alias git='LANG=en_GB git'" >> ~/.bash_profile
 ```
 
 **安装 oh-my-zsh 的命令行 （zsh）**
 
 ```shell
-echo "alias git='LANG=en_GB git'" >> ~/.zshrc
+$ echo "alias git='LANG=en_GB git'" >> ~/.zshrc
 ```
 
-
-
-### 解决 git status 中的乱码
-
-````shell
-git config --global core.quotepath false
-````
-
-### 解决 git log 中的乱码
-
-````shell
-$ git config --global i18n.commitEncoding utf-8
-# 设置提交时, message 以什么编码保存
-
-$ git config --global i18n.logOutputEncoding utf-8
-# 设置查看时, message 以什么编码传递给查看器
-````
-
-### 参考链接
-
-[git log 无法正常显示中文,怎么解决?](https://www.zhihu.com/question/57162172)
-
-
+<br />
 
 ### 设置全局忽略文件
 
-​	虽然每个项目配 .gitignore 文件可以成功，但是每个项目都需要配就很麻烦。所以可以在git的全局进行配置来忽略.DS_Store等文件
+	>虽然每个项目配 .gitignore 文件可以成功，但是每个项目都需要配就很麻烦。所以可以在git的全局进行配置来忽略.DS_Store等文件
 
 1. ````shell
-   $ vi ~/.gitignore_global
-   # 新建并编辑一个git全局忽略文件
+   $ vi ~/.gitignore_global  # 新建并编辑一个git全局忽略文件
    ````
-
-2. 在打开的 vim 中键入如下代码
+   
+2. 在打开的 vim 中粘贴如下代码
 
 3. ````
    .DS_Store
@@ -198,15 +193,17 @@ $ git config --global i18n.logOutputEncoding utf-8
    .idea
    ````
 
-4. 保存并退出 vim
+4. `:wq`保存
 
-5. 接着对git进行全局设置，让git忽略.gitignore_global中的所有文件就大功告成了
+5. 接着对 git 进行全局设置，让 git 忽略 .gitignore_global 中的所有文件就大功告成了
 
    ````shell
    $ git config --global core.excludesfile ~/.gitignore_global
    ````
 
-   
+   <br />
+
+   <br />
 
 ### 参考链接
 

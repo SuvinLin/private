@@ -1,34 +1,37 @@
-### 安装
+## 安装
 
 1. ````shell
-   brew cask install iterm2
+   $ brew cask install iterm2
    ````
 
-2. 安装完毕后，输入命令 `chsh -s /bin/zsh` ， 切换终端为 zsh 并退出重开
+2. 打开 iTerm
 
-3. 安装 [oh my zsh](https://github.com/ohmyzsh/ohmyzsh)
+3. 输入命令 `chsh -s /bin/zsh` ， 切换终端为 zsh 并退出重开
 
-4. 安装插件
+4. 安装 [oh my zsh](https://github.com/ohmyzsh/ohmyzsh)
+
+5. 安装插件
 
    - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)
-
    - [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
 
-5. 下载颜色主题 [draculatheme](https://draculatheme.com/iterm/) ，将下载好的主题中的（Dracula.itermcolors）移入目录（~/.oh-my-zsh/custom/themes）
+6. 安装字体 [FiraCode](https://github.com/tonsky/FiraCode)
 
-6. 安装 [nvm](https://github.com/nvm-sh/nvm)
+7. 下载颜色主题 [draculatheme](https://draculatheme.com/iterm/) ，并将下载好的主题中（Dracula.itermcolors）文件移入目录（~/.oh-my-zsh/custom/themes）
 
+8. 安装 [nvm](https://github.com/nvm-sh/nvm)
 
+<br />
 
-### 设置
+## 设置
 
-#### 改终端用户名
+### 改终端用户名（ys主题）
 
 1. ````shell
-   cd ~/.oh-my-zsh/themes
-   open .
-   cp ys.zsh-theme myys.zsh-theme
-   vi myys.zsh-theme
+   $ cd ~/.oh-my-zsh/themes
+   $ open .
+   $ cp ys.zsh-theme myys.zsh-theme  # 生成一个ys主题的副本
+   $ vi myys.zsh-theme
    ````
 
 2. 在 vim 打开的文件找到下面的代码段，**PROMPT**代表用户名配置
@@ -51,23 +54,27 @@
 3. 删除不需要的配置并保存
 
 4. ````
-   cd ~
-   vi .zshrc
+   $ cd ~
+   $ vi .zshrc
    ````
 
 5. 在 vim 打开的配置文件中修改主题为 myys，保存并退出
 
-6. `source .zshrc`
+6. `source .zshrc`使配置生效
+
+<br />
+
+<br />
 
 ### 参考链接
 
 ​	[oh-my-zsh终端用户名设置](https://www.jianshu.com/p/bf488bf22cba)
 
+<br />
 
+### alias & setting
 
-#### alias & setting
-
-在 .zshrc 文件末尾键入代码
+在 .zshrc 文件的 *# Example aliases* 处粘贴如下代码
 
 ````
 # homebrew alias
@@ -85,53 +92,71 @@ alias bt="brew tap"
 alias bs="brew services"
 
 # git alias
+alias gs="git status"
 alias ga="git add"
 alias gcm="git commit -m"
 alias gc="git clone"
-alias gs="git status"
 
 # npm alias
 alias n="npm"
 alias nr="npm run"
+alias nl="npm ls --depth=0"
+alias nl-g="npm ls -g --depth=0"
 
-# Vue alias
+# Vue CLI alias
 alias cli2="vue init webpack"
 alias cli3="vue create"
 
-# permission alias
+# application permission alias
 alias dis="sudo spctl --master-disable"
 alias en="sudo spctl --master-enable"
+
+# application Sign
+alias sign="codesign --force --deep --sign - "
+
+# IOS connect alias
+alias ios="sudo killall -STOP -c usbd"
+
+# WeChatTweak alias
+alias wc="sudo make install"
 
 # Apache alias
 alias apo="sudo apachectl start"
 alias apr="sudo apachectl restart"
 alias aps="sudo apachectl stop"
 
-# IOS alias
-alias ios="sudo killall -STOP -c usbd"
+# proxy on/off
+function proxy() {
+  export http_proxy=http://127.0.0.1:1081
+  export https_proxy=http://127.0.0.1:1081
+  export all_proxy=socks5://127.0.0.1:1080
+  echo ' proxy on '
+}
 
-# proxy alias
-alias proxy='export http_proxy=http://127.0.0.1:1087 https_proxy=http://12    7.0.0.1:1087'
-alias unproxy='unset http_proxy https_proxy'
-
-# 关闭Homebrew 自动更新
-export HOMEBREW_NO_AUTO_UPDATE=true
+function unproxy() {
+  unset http_proxy
+  unset https_proxy
+  unset all_proxy
+  echo ' proxy off ' 
+}
 ````
 
-
+<br />
 
 #### 首选项设置
 
-General → Closing → 仅勾选（Quit when ...）
+##### General
 
+​	Closing → 仅勾选（Quit when ...）
 
+<br />
 
 ##### Appearance
 
 - General → Theme → Minimal
 - Windows → 取消勾选（Show window number ...）
 
-
+<br />
 
 ##### Profiles
 
@@ -140,7 +165,9 @@ General → Closing → 仅勾选（Quit when ...）
 - Window → Transparency（半透明）
 - keys → Key Mappings（设置alt ← / → 在单词间移动光标）
   - 找到`⌥ ←`  → 点击 → 将Action选择为（Send Escape ...）→ Esc+ （输入 b）
-  - 找到`⌥ →`  → 点击 → 将Action选择为（Send Escape ...）→ Esc+ （输入 f）
+  - 找到`⌥ →`  → 点击 → 将Action选择为（Send Escape ...）→ Esc + （输入 f）
+
+<br />
 
 ##### Keys
 
