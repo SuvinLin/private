@@ -55,7 +55,7 @@ $ sudo /Applications/Install\ macOS\ Sierra.app/Contents/Resources/createinstall
 $ sudo /Applications/Install\ OS\ X\ El\ Capitan.app/Contents/Resources/createinstallmedia --volume /Volumes/MyVolume --applicationpath /Applications/Install\ OS\ X\ El\ Capitan.app
 ```
 
-
+<br />
 
 4. 粘贴相应的命令到终端后，回车
 
@@ -88,9 +88,9 @@ $ sudo /Applications/Install\ OS\ X\ El\ Capitan.app/Contents/Resources/createin
 
 2. 重启 mac
 
-3. 按住 `option` 键直到出现启动管理器，选择固件（选名称为 Install macOS 你制作好的系统版本名称），这里选择右边那个固件
+3. 按住 `option` 键直到出现启动管理器，选择名称为 Install macOS xxx
 
-   ![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/进入启动管理器.jpeg)
+   ![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/启动管理器.jpeg)
 
    
 
@@ -115,7 +115,7 @@ $ sudo /Applications/Install\ OS\ X\ El\ Capitan.app/Contents/Resources/createin
    - 最终剩余磁盘目录 
 
      - 内置（Macintosh HD）
-   - 外置 （插入的 U 盘）
+     - 外置 （插入的 U 盘）
      - 磁盘映像 （macOS Base System）
      
      ![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/剩余盘符.jpeg)
@@ -134,7 +134,7 @@ $ sudo /Applications/Install\ OS\ X\ El\ Capitan.app/Contents/Resources/createin
 
    ![](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/选择安装磁盘.jpeg)
 
-   等待即可
+   安装完成后便会自动重启
 
 <br />
 
