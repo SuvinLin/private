@@ -1,9 +1,9 @@
 ### General
 
-- `Startup` → `Launch Alfred at login`  (开启)
+- Startup → 勾选 Launch Alfred at login
 - 更改快捷键 （command double tap）
 
-
+<br />
 
 ### Features
 
@@ -11,7 +11,7 @@
 
 ​	Extras：除了 AppleScript 不勾选，其余选项全部勾选
 
-
+<br />
 
 #### 	Web Search
 
@@ -87,17 +87,24 @@
   https://github.com/search?q={query}&amp;ref=opensearch
   ````
 
-  
+
+<br />
 
 #### 	Web Bookmarks
 
-​	Google Chrome Bookmarks(开启)
+**source**
 
+​	勾选 Google Chrome Bookmarks
 
+**show bookmarks**
+
+​	via keyword bm
+
+<br />
 
 #### 	Terminal
 
-​	Application → 选择（Custom）→ 并键入下面代码
+​	Application → 选择 Custom → 并键入下面代码
 
 ````
 on alfred_script(q)
@@ -144,20 +151,20 @@ on alfred_script(q)
 end alfred_script
 ````
 
-
+<br />
 
 ### Workflows
 
-​	workflow 在 iCloud  的  Tools 中
+​	安装 workflow
 
-
+<br />
 
 ### Appearance
 
 ​	选择  Alfred macOS Dark
 
-
+<br />
 
 ### Update
 
-​	取消勾选（Automatically check for  updates）
+​	取消勾选 Automatically check for  updates
