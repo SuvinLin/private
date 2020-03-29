@@ -36,4 +36,3 @@
 10. 安装完后执行命令 `brew doctor`，检查 Homebrew 安装存在的问题
 
 11. 执行命令 `brew cask doctor`，检查 brew cask
-
