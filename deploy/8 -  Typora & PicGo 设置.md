@@ -1,6 +1,6 @@
 ## PicGo设置
 
-![PicGo Github图床设置](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/PicGo Github图床设置.png)
+![PicGo的Github图床设置](https://cdn.jsdelivr.net/gh/suvin7/picBed/markdown/PicGo的Github图床设置.png)
 
 ````
 设定仓库名 suvin7/picBed
