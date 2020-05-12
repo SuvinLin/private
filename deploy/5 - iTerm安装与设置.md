@@ -53,7 +53,7 @@
 
 3. 删除不需要的配置并保存
 
-4. ````
+4. ````shell
    $ cd ~
    $ vi .zshrc
    ````
@@ -76,7 +76,7 @@
 
 在 .zshrc 文件的 *# Example aliases* 处粘贴如下代码
 
-````
+````shell
 # homebrew alias
 # brew
 alias b="brew"
@@ -89,13 +89,16 @@ alias bc="brew cask"
 alias bt="brew tap"
 
 # brew services
-alias bs="brew services"
+alias bso="brew services start"
+alias bsr="brew services restart"
+alias bss="brew services stop"
 
 # git alias
 alias gs="git status"
 alias ga="git add"
 alias gcm="git commit -m"
 alias gc="git clone"
+alias gl="git log"
 
 # npm alias
 alias n="npm"
@@ -118,12 +121,7 @@ alias sign="codesign --force --deep --sign - "
 alias ios="sudo killall -STOP -c usbd"
 
 # WeChatTweak alias
-alias wc="sudo make install"
-
-# Apache alias
-alias apo="sudo apachectl start"
-alias apr="sudo apachectl restart"
-alias aps="sudo apachectl stop"
+alias wechat="cd /Users/suvin/Library/Mobile\ Documents/com~apple~CloudDocs/Tools/WeChatTweak-macOS;sudo make install"
 
 # proxy on/off
 function proxy() {
