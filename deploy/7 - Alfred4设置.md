@@ -15,6 +15,12 @@
 
 #### 	Web Search
 
+- MDN 搜索
+
+  ````
+  https://developer.mozilla.org/zh-CN/search?q={query}
+  ````
+
 - 百度百科搜索
 
   ````
