@@ -77,6 +77,12 @@
 在 .zshrc 文件的 *# Example aliases* 处粘贴如下代码
 
 ````shell
+# reset the DNS cache
+alias dns="sudo killall -HUP mDNSResponder"
+
+# Git Language Setting
+alias git='LANG=en_GB git'
+
 # homebrew alias
 # brew
 alias b="brew"
@@ -110,6 +116,12 @@ alias nl-g="npm ls -g --depth=0"
 alias cli2="vue init webpack"
 alias cli3="vue create"
 
+# uni-app alias
+alias uni="vue create -p dcloudio/uni-preset-vue"
+
+# React alias
+alias react="npx create-react-app"
+
 # application permission alias
 alias dis="sudo spctl --master-disable"
 alias en="sudo spctl --master-enable"
@@ -120,23 +132,11 @@ alias sign="codesign --force --deep --sign - "
 # IOS connect alias
 alias ios="sudo killall -STOP -c usbd"
 
-# WeChatTweak alias
-alias wechat="cd /Users/suvin/Library/Mobile\ Documents/com~apple~CloudDocs/Tools/WeChatTweak-macOS;sudo make install"
+# WeChatExtension-ForMac alias
+alias wechat="sh '/Users/suvin/Library/Mobile Documents/com~apple~CloudDocs/Tools/WeChatExtension-ForMac/WeChatExtension/Rely/Install.sh'"
 
 # proxy on/off
-function proxy() {
-  export http_proxy=http://127.0.0.1:1081
-  export https_proxy=http://127.0.0.1:1081
-  export all_proxy=socks5://127.0.0.1:1080
-  echo ' proxy on '
-}
-
-function unproxy() {
-  unset http_proxy
-  unset https_proxy
-  unset all_proxy
-  echo ' proxy off ' 
-}
+alias proxy="export HTTP_PROXY=http://127.0.0.1:58591; export HTTPS_PROXY=http://127.0.0.1:58591; export ALL_PROXY=socks5://127.0.0.1:51837"
 ````
 
 <br />
