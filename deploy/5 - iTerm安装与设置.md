@@ -77,11 +77,12 @@
 在 .zshrc 文件的 *# Example aliases* 处粘贴如下代码
 
 ````shell
+# Git Language Setting
+export LANG=en_US.UTF-8
+
+# alias 
 # reset the DNS cache
 alias dns="sudo killall -HUP mDNSResponder"
-
-# Git Language Setting
-alias git='LANG=en_GB git'
 
 # homebrew alias
 # brew
