@@ -80,6 +80,11 @@
 # Git Language Setting
 export LANG=en_US.UTF-8
 
+# Terminal Proxy Setting
+export HTTP_PROXY=http://127.0.0.1:58591; 
+export HTTPS_PROXY=http://127.0.0.1:58591; 
+export ALL_PROXY=socks5://127.0.0.1:51837
+
 # alias 
 # reset the DNS cache
 alias dns="sudo killall -HUP mDNSResponder"
@@ -135,9 +140,6 @@ alias ios="sudo killall -STOP -c usbd"
 
 # WeChatExtension-ForMac alias
 alias wechat="sh '/Users/suvin/Library/Mobile Documents/com~apple~CloudDocs/Tools/WeChatExtension-ForMac/WeChatExtension/Rely/Install.sh'"
-
-# proxy on/off
-alias proxy="export HTTP_PROXY=http://127.0.0.1:58591; export HTTPS_PROXY=http://127.0.0.1:58591; export ALL_PROXY=socks5://127.0.0.1:51837"
 ````
 
 <br />
