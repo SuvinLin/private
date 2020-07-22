@@ -48,11 +48,13 @@ $ which git					# /usr/bin/git
 终端键入如下命令
 
 ````shell
-$ git config --global user.name "你的用户名"
-$ git config --global user.email 你的邮箱
+$ git config --global user.name "yourname"
+$ git config --global user.email your@email.com
 $ git config --global core.quotepath false  # 解决 git status 中的乱码
 $ git config --global i18n.commitEncoding utf-8  # 设置提交时, message 以什么编码保存
 $ git config --global i18n.logOutputEncoding utf-8  # 设置查看时, message 以什么编码传递给查看器
+$ git config --global http.proxy=socks5://127.0.0.1:51837 # 让 git clone 走代理
+$ git config --global https.proxy=socks5://127.0.0.1:51837 # 让 git clone 走代理
 ````
 
 配置完后，通过 `git config --global --list ` 检查配置
@@ -148,8 +150,6 @@ $ git config --global i18n.logOutputEncoding utf-8  # 设置查看时, message �
 
 <br />
 
-<br />
-
 ### 参考链接
 
 [使用 SSH 连接到 GitHub](https://help.github.com/cn/github/authenticating-to-github/connecting-to-github-with-ssh)
@@ -158,27 +158,17 @@ $ git config --global i18n.logOutputEncoding utf-8  # 设置查看时, message �
 
 ## Git  其他设置
 
-### 将 git 中提示信息设回英文
+### 将 git 中提示信息显示中文
 
-根据终端选择对应的命令并执行
+​	git 会默认根据系统的首选语言来设置提示信息
 
-**普通命令行（bash）**
-
-```shell
-$ echo "alias git='LANG=en_GB git'" >> ~/.bash_profile
-```
-
-**安装 oh-my-zsh 的命令行 （zsh）**
-
-```shell
-$ echo "alias git='LANG=en_GB git'" >> ~/.zshrc
-```
+​	若要将其改回英文，在 item2 的 `.zshrc` 中添加配置 `export LANG=en_US.UTF-8`
 
 <br />
 
 ### 设置全局忽略文件
 
-	>虽然每个项目配 .gitignore 文件可以成功，但是每个项目都需要配就很麻烦。所以可以在git的全局进行配置来忽略.DS_Store等文件
+>虽然每个项目配 .gitignore 文件可以成功，但是每个项目都需要配就很麻烦。所以可以在git的全局进行配置来忽略.DS_Store等文件
 
 1. ````shell
    $ vi ~/.gitignore_global  # 新建并编辑一个git全局忽略文件
@@ -200,8 +190,6 @@ $ echo "alias git='LANG=en_GB git'" >> ~/.zshrc
    ````shell
    $ git config --global core.excludesfile ~/.gitignore_global
    ````
-
-   <br />
 
    <br />
 
