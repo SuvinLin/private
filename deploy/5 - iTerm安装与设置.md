@@ -137,9 +137,6 @@ alias sign="codesign --force --deep --sign - "
 
 # IOS connect alias
 alias ios="sudo killall -STOP -c usbd"
-
-# WeChatExtension-ForMac alias
-alias wechat="sh '/Users/suvin/Library/Mobile Documents/com~apple~CloudDocs/Tools/WeChatExtension-ForMac/WeChatExtension/Rely/Install.sh'"
 ````
 
 <br />
