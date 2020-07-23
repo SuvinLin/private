@@ -53,8 +53,6 @@ $ git config --global user.email your@email.com
 $ git config --global core.quotepath false  # 解决 git status 中的乱码
 $ git config --global i18n.commitEncoding utf-8  # 设置提交时, message 以什么编码保存
 $ git config --global i18n.logOutputEncoding utf-8  # 设置查看时, message 以什么编码传递给查看器
-$ git config --global http.proxy=socks5://127.0.0.1:51837 # 让 git clone 走代理
-$ git config --global https.proxy=socks5://127.0.0.1:51837 # 让 git clone 走代理
 ````
 
 配置完后，通过 `git config --global --list ` 检查配置
@@ -153,6 +151,33 @@ $ git config --global https.proxy=socks5://127.0.0.1:51837 # 让 git clone 走�
 ### 参考链接
 
 [使用 SSH 连接到 GitHub](https://help.github.com/cn/github/authenticating-to-github/connecting-to-github-with-ssh)
+
+<br />
+
+
+
+### SSH走代理
+
+​	在 github 中使用 `ssh` 进行 `git clone` 到本地，速度慢的简直了。这个时候我们需要对 `ssh` 走代理
+
+````bash
+cd ~	
+cd .ssh
+vi config	# 该文件有则编辑，无则创建
+
+# 在 config 文件中添加如下内容
+
+# Host 必须是 github.com
+# 若要走 HTTP 代理，添加下条命令
+# ProxyCommand socat - PROXY:127.0.0.1:%h:%p,proxyport=8080
+# 走 socks5 代理（如 Shadowsocks），添加下条命令
+# ProxyCommand nc -v -x 127.0.0.1:1080 %h %p
+
+Host github.com
+   HostName github.com
+   User git
+   ProxyCommand nc -v -x 127.0.0.1:51837 %h %p
+````
 
 <br />
 
