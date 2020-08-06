@@ -14,6 +14,8 @@
 
    - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)
    - [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
+   - [autojump](https://github.com/wting/autojump)
+     - 通过 `brew` 安装完成后，在 `.zshrc` 的 `Plugins` 之中添加 `autojump` 字符串
 
 6. 安装字体 [FiraCode](https://github.com/tonsky/FiraCode)
 
