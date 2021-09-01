@@ -20,7 +20,7 @@
 **Catalina** ：*
 
 ```shell
-$ sudo /Applications/Install\ macOS\ Catalina.app/Contents/Resources/createinstallmedia --volume /Volumes/MyVolume
+sudo /Applications/Install\ macOS\ Catalina.app/Contents/Resources/createinstallmedia --volume /Volumes/MyVolume
 ```
 
 
@@ -28,7 +28,7 @@ $ sudo /Applications/Install\ macOS\ Catalina.app/Contents/Resources/createinsta
 **Mojave**：*
 
 ```shell
-$ sudo /Applications/Install\ macOS\ Mojave.app/Contents/Resources/createinstallmedia --volume /Volumes/MyVolume
+sudo /Applications/Install\ macOS\ Mojave.app/Contents/Resources/createinstallmedia --volume /Volumes/MyVolume
 ```
 
 
@@ -36,7 +36,7 @@ $ sudo /Applications/Install\ macOS\ Mojave.app/Contents/Resources/createinstall
 **High Sierra**：*
 
 ```shell
-$ sudo /Applications/Install\ macOS\ High\ Sierra.app/Contents/Resources/createinstallmedia --volume /Volumes/MyVolume
+sudo /Applications/Install\ macOS\ High\ Sierra.app/Contents/Resources/createinstallmedia --volume /Volumes/MyVolume
 ```
 
 
@@ -44,7 +44,7 @@ $ sudo /Applications/Install\ macOS\ High\ Sierra.app/Contents/Resources/createi
 **Sierra**：
 
 ```shell
-$ sudo /Applications/Install\ macOS\ Sierra.app/Contents/Resources/createinstallmedia --volume /Volumes/MyVolume --applicationpath /Applications/Install\ macOS\ Sierra.app
+sudo /Applications/Install\ macOS\ Sierra.app/Contents/Resources/createinstallmedia --volume /Volumes/MyVolume --applicationpath /Applications/Install\ macOS\ Sierra.app
 ```
 
 
@@ -52,7 +52,7 @@ $ sudo /Applications/Install\ macOS\ Sierra.app/Contents/Resources/createinstall
 **El Capitan**：
 
 ```shell
-$ sudo /Applications/Install\ OS\ X\ El\ Capitan.app/Contents/Resources/createinstallmedia --volume /Volumes/MyVolume --applicationpath /Applications/Install\ OS\ X\ El\ Capitan.app
+sudo /Applications/Install\ OS\ X\ El\ Capitan.app/Contents/Resources/createinstallmedia --volume /Volumes/MyVolume --applicationpath /Applications/Install\ OS\ X\ El\ Capitan.app
 ```
 
 <br />
