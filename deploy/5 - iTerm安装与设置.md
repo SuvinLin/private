@@ -1,7 +1,7 @@
 ## 安装
 
 1. ````shell
-   $ brew cask install iterm2
+   brew cask install iterm2
    ````
 
 2. 打开 iTerm
@@ -30,10 +30,10 @@
 ### 改终端用户名（ys主题）
 
 1. ````shell
-   $ cd ~/.oh-my-zsh/themes
-   $ open .
-   $ cp ys.zsh-theme myys.zsh-theme  # 生成一个ys主题的副本
-   $ vi myys.zsh-theme
+   cd ~/.oh-my-zsh/themes
+   open .
+   cp ys.zsh-theme myys.zsh-theme  # 生成一个ys主题的副本
+   vi myys.zsh-theme
    ````
 
 2. 在 vim 打开的文件找到下面的代码段，**PROMPT**代表用户名配置
@@ -56,8 +56,8 @@
 3. 删除不需要的配置并保存
 
 4. ````shell
-   $ cd ~
-   $ vi .zshrc
+   cd ~
+   vi .zshrc
    ````
 
 5. 在 vim 打开的配置文件中修改主题为 myys，保存并退出
