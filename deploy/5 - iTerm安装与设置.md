@@ -83,7 +83,8 @@
 export LANG=en_US.UTF-8
 
 # Terminal Proxy Setting 
-export ALL_PROXY=socks5://127.0.0.1:51837
+# clashX
+export ALL_PROXY=socks5://127.0.0.1:7890
 
 # alias 
 # reset the DNS cache
