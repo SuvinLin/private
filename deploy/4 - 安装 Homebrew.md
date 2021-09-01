@@ -6,8 +6,6 @@
 
 4. 测试是否开启命令行代理  `curl ipinfo.io`
 
-5. 安装 Xcode 命令行工具  `xcode-select --install`
+5. 在 [Homebrew](https://brew.sh/index_zh-cn) 官网复制安装代码并在终端执行
 
-6. 在 [Homebrew](https://brew.sh/index_zh-cn) 官网复制安装代码并在终端执行
-
-7. 安装完后执行命令 `brew doctor`，检查 Homebrew 安装存在的问题
+6. 安装完后执行命令 `brew doctor`，检查 Homebrew 安装存在的问题
