@@ -95,12 +95,6 @@ alias dns="sudo killall -HUP mDNSResponder"
 alias b="brew"
 alias b-tree="brew deps --installed --tree"
 
-# brew cask
-alias bc="brew cask"
-
-# brew tap
-alias bt="brew tap"
-
 # brew services
 alias bso="brew services start"
 alias bsr="brew services restart"
@@ -165,13 +159,3 @@ alias ios="sudo killall -STOP -c usbd"
 - keys → Key Mappings（设置alt ← / → 在单词间移动光标）
   - 找到`⌥ ←`  → 点击 → 将Action选择为（Send Escape ...）→ Esc+ （输入 b）
   - 找到`⌥ →`  → 点击 → 将Action选择为（Send Escape ...）→ Esc + （输入 f）
-
-<br />
-
-##### Keys
-
-- Hotkey →  勾选（Show/hide all ...）
-- Keys → HotKey → HotKey改键 （option + i）
-
-
-
