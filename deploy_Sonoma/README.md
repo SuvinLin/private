@@ -21,7 +21,7 @@
 | 第 6 步 | 效率启动器：**SW Tools** | **Alfred 5 + 系统聚焦 → 自研原生 SW Tools**（含剪贴板预览、文件/应用搜索、Snippet 自动展开、OneDrive 同步） |
 | 第 7 步 | Node.js 环境配置（`fnm`） | **`nvm` → Rust 版 `fnm`**（自动读取 `.nvmrc` / `.node-version`，当前默认 Node `v26.13.1` / npm `11.20.0`） |
 | 第 8 步 | 写作与图床配置（Typora + PicGo） | PicGo 接入 `SuvinLin/picBed` + `fastly.jsdelivr.net` + 本地 `127.0.0.1:7890` 代理 |
-| 第 9 步 | 本机已安装软件总清单 | 按实际 `/Applications` 分类梳理全部 42 款主力应用与同步配置路径 |
+| 第 9 步 | 本机已安装软件总清单 | 按实际 `/Applications` 分类梳理全部 41 款主力应用与同步配置路径 |
 
 ---
 
@@ -460,9 +460,9 @@ npm -v                # 11.20.0
 | **开发与 AI 编程** | `Visual Studio Code`、`Antigravity`、`Trae CN`、`HBuilderX`、`MiniMax Code`、`WorkBuddy`、`wechatwebdevtools`、`Ghostty`、`Termius`、`Charles` | 主力代码、小程序调试、终端、SSH 与抓包 |
 | **AI 助手** | `ChatGPT`、`Doubao`（含 `~/Applications/Doubao Apps`） | 桌面端 AI 工具 |
 | **效率与系统工具** | `SW Tools`、`Mole`、`Snipaste`、`Status Trio`、`FlClash`、`MacZip`、`Tiny Image`、`LocalSend`、`UURemote`、`小米互联服务` | 启动器、清理、截图、状态栏监控、代理、解压、压缩图、局域网/远程互联 |
-| **写作与办公** | `Typora`、`PicGo`、`wpsoffice`、`Microsoft OneNote`、`Microsoft Outlook` | Markdown 写作图床、文档套件、笔记与邮件 |
+| **写作与办公** | `PicGo`、`wpsoffice`、`Microsoft OneNote`、`Microsoft Outlook` | 图床工具、文档套件、笔记与邮件 |
 | **浏览器、通讯与网盘** | `Google Chrome`、`Safari`、`WeChat`、`QQ`、`Telegram`、`OneDrive`、`aDrive`（阿里云盘）、`BaiduNetdisk_mac`、`QuarkCloudDrive` | OneDrive 承担 `quickbar config` 等配置同步 |
-| **影音与下载** | `IINA`、`NeteaseMusic`、`Thunder`（迅雷）、`TunesKit Video Cutter`、`抖音`、`红果短剧` | 本地视频播放、音乐与下载剪辑 |
+| **影音与下载** | `IINA`、`NeteaseMusic`、`Thunder`（迅雷）、`TunesKit Video Cutter`、`抖音`、`红果免费短剧` | 本地视频播放、音乐与下载剪辑 |
 
 ---
 
