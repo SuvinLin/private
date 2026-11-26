@@ -383,18 +383,38 @@ ssh -T git@github.com
 
 ## 第 6 步：效率启动器 — SW Tools（替代 Alfred & 聚焦）
 
-原 **Alfred 5 + 系统聚焦搜索** 已全面替换为自研轻量原生启动器 **SW Tools**（安装包约 844 KB，空载内存约 24 MB，采用常驻引擎 Worker + 懒加载面板）。
+原 **Alfred 5 + 系统聚焦搜索** 已全面替换为自研轻量原生工具集 **SW Tools**（整合应用启动、剪贴板历史、文本片段展开、Chrome 书签与无痕打开、网页快搜、Finder 工具栏终端 `SW Terminal.app`、窗口分屏、菜单栏图标收纳与图片压缩；安装包约 844 KB，空载内存约 24 MB，采用常驻引擎 Worker + 懒加载面板）。
 
-### 6.1 源码构建与安装
-- 源码目录：`/Users/suvin/.gemini/antigravity/scratch/QuickBar`（主程序 `src/main.m`、后端引擎 `Resources/engine.py`）
-- 安装路径：`/Applications/SW Tools.app`
-```bash
-cd /Users/suvin/.gemini/antigravity/scratch/QuickBar
-./build.sh
-open -a "/Applications/SW Tools.app"
-```
+### 6.1 备份位置与重装后快速安装步骤
+
+- **OneDrive 源码备份目录**：`~/Library/CloudStorage/OneDrive-个人/quickbar config/SWTools-Backup`（建立软链接后即 `~/OneDrive/quickbar config/SWTools-Backup`）
+- **OneDrive 配置同步目录**：`~/OneDrive/quickbar config/`（包含 `settings.json`、`snippets.json`、`websearches.json`）
+- **本机应用安装路径**：`/Applications/SW Tools.app`
+
+1. **确认已安装 Xcode Command Line Tools**：
+   ```zsh
+   xcode-select --install
+   ```
+
+2. **从 OneDrive 备份目录编译并安装**：
+   ```zsh
+   cd ~/Library/CloudStorage/OneDrive-个人/"quickbar config"/SWTools-Backup
+   ./build.sh
+   open -a "/Applications/SW Tools.app"
+   ```
+   - 脚本会自动编译 `SW Tools.app` 与 `SW Terminal.app`，生成本地代码签名证书 `SW Tools Local Signer` 并安装到 `/Applications/SW Tools.app`。
+   - 若首次签名时弹出钥匙串授权提示，点击 **「始终允许」**。
+
+3. **首次启动配置**（按 `⌘,` 或点击顶部状态栏图标 → 偏好设置）：
+   - **「通用」**：勾选 **开机自动启动**（原生 `SMAppService`），点击 **「打开辅助功能设置...」** 开启 `SW Tools` 权限（启用全局双击 `⌘`、自动粘贴、Snippets 展开与窗口分屏）。
+   - **「别名与工具」**：点击 **「定位 Finder 工具栏图标」**，按住 `⌘` 将 `SW Terminal.app` 拖到 Finder 顶部工具栏。
+   - **「窗口与菜单栏」**：按住 `⌘` 将需要隐藏的菜单栏图标拖到 `|` 分隔符左侧，点击折叠图标即可一键收起/展开。
+
+4. **可选依赖**（如已放置 `~/.local/bin/pngquant` 可略过）：
+   - 如需对透明 PNG 进行更高压缩比处理，可按需安装 `pngquant`（放入 `~/.local/bin/` 或 `brew install pngquant`）。
+
 > [!IMPORTANT]
-> 每次执行 `./build.sh` 本地重新签名后，请确认在「系统设置 → 隐私与安全性 → 辅助功能」中重新勾选/添加 `SW Tools`，否则全局双击 `⌘` 不会触发；开机自启可通过状态栏图标菜单「开机自启动」（原生 `SMAppService`）一键开关。
+> 每次执行 `./build.sh` 本地重新编译签名后，若全局双击 `⌘` 暂时无响应，请在「系统设置 → 隐私与安全性 → 辅助功能」中移除并重新勾选/添加一次 `SW Tools`。
 
 ### 6.2 核心快捷键与内置指令
 
@@ -472,5 +492,5 @@ npm -v                # 11.20.0
 2. `xcode-select --install`，执行第 2 步系统设置 `defaults` 脚本与腾讯/阿里 DNS。
 3. 建立 `~/.local/bin`，放入 `fnm`、`fzf`、`zoxide`、`gh`、`delta`、`mole`，编译安装 `git 2.56.1`；写入 `~/.gitconfig`、`~/.gitignore_global` 与 `~/.ssh/config`。
 4. 安装 **Ghostty** + **FiraCode Nerd Font** + **Oh My Zsh**（`myys` + 插件），还原 `~/.config/ghostty/config`、`~/.zprofile`、`~/.zshrc`、`~/.vimrc`。
-5. 执行 `fnm install --lts` 配好 Node.js；从源码构建安装 **SW Tools** 并开启辅助功能与开机自启（自动拉取 OneDrive 同步配置）。
-6. 装好 **Typora + PicGo**、开发 IDE 及第 9 步常用软件清单。
+5. 执行 `fnm install --lts` 配好 Node.js；进入 `~/OneDrive/quickbar config/SWTools-Backup` 执行 `./build.sh` 编译安装 **SW Tools**，并在 `⌘,` 中完成开机自启、辅助功能授权、Finder 工具栏终端与菜单栏收纳设置。
+6. 装好开发 IDE、**PicGo**（如写作需要可配合 Markdown 工具）及第 9 步常用软件清单。
