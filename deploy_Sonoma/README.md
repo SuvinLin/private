@@ -1,128 +1,476 @@
-# macOS 14 重装后配置清单 & 文档更新记录
+# macOS 装机与开发环境配置指南（Intel `x86_64` · 2026 当前环境版）
 
-> 来源：[SuvinLin/private/deploy](https://github.com/SuvinLin/private/tree/master/deploy)（共 9 篇文档，原基于 macOS 10.14 Mojave 编写）
-> 当前环境：**macOS 14.8.9（Intel `x86_64`）**
+> **整理日期**：2026-11-26  
+> **硬件与系统**：**Intel 芯片 Mac（`x86_64`）** · `Intel(R) Core(TM) i5-1038NG7 CPU @ 2.00GHz` · `macOS 26.7.3`（Build `25G342`）  
+> **参考来源**：[SuvinLin/private/deploy](https://github.com/SuvinLin/private/tree/master/deploy)（由原 9 篇基于 macOS 10.14 的文档按当前本机实际配置重写与合并）
 
-## 执行进度总览
+> [!IMPORTANT]
+> 本机为 **Intel 芯片（`x86_64`）架构**（非 Apple Silicon `arm64`）。下文涉及的所有 **GUI 软件安装包**与 **CLI 预编译二进制**，下载时请务必选择 **`Intel` / `x86_64` / `amd64` / `Universal`（通用版）**，切勿下载仅限 `Apple Silicon` / `arm64` 的版本。
 
-| 序号 | 原文档 | 状态 | 说明 |
+---
+
+## 步骤总览与架构演进
+
+| 步骤 | 主题 | 相较旧版文档的核心变化 |
+| --- | --- | --- |
+| 第 1 步 | 重装 macOS 与基础初始化 | 补充抹盘重装方式、FlClash 代理下 iCloud 登录坑点、`CommandLineTools` 修复与 OneDrive 软链接 |
+| 第 2 步 | 系统设置与常用 macOS Tips | 更新至新版「系统设置」路径与命令行一键写入；修正 Launchpad 行/列注释；DNS 改为腾讯/阿里 |
+| 第 3 步 | 去包管理器方案（`~/.local/bin` + Mole） | **放弃 Homebrew 与 MacPorts**；GUI 官网直装，现代 CLI 用官方预编译二进制放 `~/.local/bin/` + `Mole` 清理 |
+| 第 4 步 | 终端与编辑器配置（Ghostty + Zsh + Vim） | **iTerm2 → Ghostty 1.4.0**、**`autojump` → `zoxide` + `fzf`**、字体升级 **FiraCode Nerd Font**，合并 `~/.vimrc` |
+| 第 5 步 | Git、GitHub CLI 与 SSH 配置 | Git `2.56.1` 源码免 `sudo` 编译；新增 `gh` + `delta`；密钥升级 **`ed25519`**（443 端口直连） |
+| 第 6 步 | 效率启动器：**SW Tools** | **Alfred 5 + 系统聚焦 → 自研原生 SW Tools**（含剪贴板预览、文件/应用搜索、Snippet 自动展开、OneDrive 同步） |
+| 第 7 步 | Node.js 环境配置（`fnm`） | **`nvm` → Rust 版 `fnm`**（自动读取 `.nvmrc` / `.node-version`，当前默认 Node `v26.13.1` / npm `11.20.0`） |
+| 第 8 步 | 写作与图床配置（Typora + PicGo） | PicGo 接入 `SuvinLin/picBed` + `fastly.jsdelivr.net` + 本地 `127.0.0.1:7890` 代理 |
+| 第 9 步 | 本机已安装软件总清单 | 按实际 `/Applications` 分类梳理全部 42 款主力应用与同步配置路径 |
+
+---
+
+## 第 1 步：重装 macOS 与基础初始化
+
+### 1.1 系统重装方式（Intel `x86_64` Mac）
+- **带 T2 安全芯片的 Intel Mac（推荐）**：系统设置 →「通用」→「传输或还原」→「抹掉所有内容和设置」，无需制作 U 盘即可快速恢复纯净系统。
+- **内置恢复分区 / 网络恢复（Intel 快捷键）**：关机后开机立刻长按 `⌘ + R`（本地恢复）或 `⌥ + ⌘ + R`（联网安装最新兼容 macOS）。*(注意：不要用 Apple Silicon 的“长按电源键”方式)*
+- **U 盘抹盘重装（通用兜底）**：下载对应版本安装器后制作启动盘，Intel Mac 开机长按 **`⌥`（Option）** 选择 U 盘启动安装：
+  ```bash
+  sudo /Applications/Install\ macOS\ <版本名>.app/Contents/Resources/createinstallmedia --volume /Volumes/<U盘卷名>
+  ```
+
+### 1.2 网络代理与 iCloud 登录（必看避坑）
+1. 优先安装 **FlClash**（`mixed-port: 7890`），作为后续下载工具与终端代理基础。
+2. **登录 Apple 账户 / iCloud 踩坑**：开启系统全局 HTTP/SOCKS 代理时，若忽略列表未放行 `*.apple.com` 与 `*.icloud.com`，登录 iCloud 极易转圈卡死；可临时关闭系统代理或先登录 App Store 后再试。
+3. 装好 **OneDrive** 后，建立主目录软链接方便脚本与同步配置访问：
+   ```bash
+   ln -s "$HOME/Library/CloudStorage/OneDrive-个人" "$HOME/OneDrive"
+   ```
+
+### 1.3 安装 Xcode Command Line Tools
+```bash
+xcode-select --install
+```
+> [!TIP]
+> 若曾跨大版本升级系统导致 `/Library/Developer/CommandLineTools/usr/include/swift/` 下同时残留 `module.modulemap` 与 `bridging.modulemap`（会引发 Swift/Clang 编译异常），执行以下彻底重装：
+> ```bash
+> sudo rm -rf /Library/Developer/CommandLineTools && xcode-select --install
+> ```
+
+---
+
+## 第 2 步：系统设置与常用 macOS Tips
+
+### 2.1 系统设置核对清单（新版「系统设置」）
+- **辅助功能 → 指针控制 → 触控板选项**：开启「使用触控板进行拖移」，方式选「三指拖移」。
+- **触控板**：开启「轻点来点按」。
+- **桌面与程序坞 → 触发角**：左上角设为「启动屏幕保护程序」。
+- **锁定屏幕**：不活动后不自动启动屏保（由触发角控制）；进入屏保或关闭显示器后「立即」要求输入密码。
+- **键盘**：关闭自动纠错、自动大写、连按两下空格插入句点、智能引号和破折号（方便写代码）。
+- **隐私与安全性 → 辅助功能**：后续需在此为 `SW Tools`、`Snipaste` 等效率工具勾选权限。
+
+### 2.2 一键写入脚本与常用 Tips
+
+以下配置均与当前本机生效状态一致：
+
+```bash
+# 1. 配置 Wi-Fi DNS（腾讯 DNS + 阿里 DNS）
+sudo networksetup -setdnsservers "Wi-Fi" 119.29.29.29 223.5.5.5
+
+# 2. Finder：关闭标题栏完整路径，改为开启底部路径栏（可点击/拖拽跳转）
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool NO
+defaults write com.apple.finder ShowPathbar -bool true
+killall Finder
+
+# 3. 触发角：左上角启动屏幕保护程序（5 = Start Screen Saver）
+defaults write com.apple.dock wvous-tl-corner -int 5
+defaults write com.apple.dock wvous-tl-modifier -int 0
+
+# 4. 调整启动台网格为 7 行 7 列（注意：rows 为行数，columns 为列数）
+defaults write com.apple.dock springboard-rows -int 7
+defaults write com.apple.dock springboard-columns -int 7
+defaults write com.apple.dock ResetLaunchPad -bool TRUE
+killall Dock
+
+# 5. 接通电源提示音（写入后需重启或重新插拔电源生效）
+defaults write com.apple.PowerChime ChimeOnAllHardware -bool true
+
+# 6. （可选）菜单栏电池显示百分比（当前本机默认为关闭 0，按需开启）
+# defaults -currentHost write com.apple.controlcenter BatteryShowPercentage -bool true
+```
+
+---
+
+## 第 3 步：去包管理器方案（`~/.local/bin` + Mole）
+
+本机为 **Intel `x86_64` 架构**，已**完全放弃 Homebrew 与 MacPorts**（随着生态向 Apple Silicon 倾斜，Intel 上 Homebrew/MacPorts 经常缺少预编译 Bottle/Archive，装一个工具容易触发长达数小时的 Rust/LLVM 源码本地编译且极占空间）：
+
+1. **系统自带基础工具已足够**：`/bin/zsh`、`vim`、`/usr/bin/python3`（`3.9.6`）、`clang`（来自 Command Line Tools）。
+2. **GUI 应用全部官网或 GitHub Release 直装**至 `/Applications/`（下载 `Intel` / `x64` / `Universal` 包）。
+3. **现代 CLI 工具统一放入 `~/.local/bin/`**（零依赖、免 `sudo` 单文件二进制）：
+
+| 命令 | 当前版本 | Intel 下载包架构标识 | 用途与来源 |
 | --- | --- | --- | --- |
-| 1 | `1 - 重装mac OS.md` | ✅ 已完成 | 当前已重装为 macOS 14.8.9 |
-| 2 | `2 - 系统设置.md` | ✅ 已完成 | 系统设置、DNS（腾讯/阿里）、`mac tips` 已完成，iCloud 登录已通 |
-| 3 | `3 - vim设置.md` | ➡️ 已合并至第 5 步 | 已整合进终端配置环节，直接写入 `~/.vimrc` |
-| 4 | `4 - 安装 Homebrew.md` | ✅ 已定稿（去包管理器方案） | 放弃 Homebrew 与 MacPorts；GUI 官网直装，现代 CLI 工具直接下载官方预编译二进制放 `~/.local/bin/` |
-| 5 | `5 - iTerm安装与设置.md` | ✅ 已完成 | 含原第 3 步 `~/.vimrc`、Oh My Zsh + `myys`、插件、`zoxide v0.10.0` + `fzf v0.75.0`、`FiraCode Nerd Font`、Dracula 与 iTerm2 全部首选项 |
-| 6 | `6 - Git的安装与设置.md` | ✅ 已完成 | `git v2.56.1` + `gh v2.105.0` + `delta 0.18.2`；`ssh -T git@github.com` 实测返回 `Hi SuvinLin!` |
-| 7 | `7 - Alfred4设置.md` | ✅ 已完成 | 升级为 Alfred 5（含 Powerpack）；默认结果、5 条精简 Web Search、iTerm2 Terminal 脚本、快捷键、Dark 主题、自启与 Chrome 书签已全部配妥 |
-| 8 | `8 - Typora & PicGo 设置.md` | ✅ 已完成 | PicGo → GitHub `SuvinLin/picBed` + fastly.jsDelivr；Typora 调用 PicGo.app 上传，已实测 |
-| 9 | `9 - node 环境配置.md` | ✅ 已完成 | 已 `fnm install --lts`（Node v26.13.1 / npm 11.20.0）并设为默认； `nvm` 替换为 `fnm`（`v1.39.0` 已安装至 `~/.local/bin/fnm`，第 9 步直接 `fnm install --lts`） |
+| `git` | `2.56.1` | 源码本机编译 | 第 5 步源码编译安装（优先于系统自带 Git） |
+| `gh` | `2.105.0` | `macOS_amd64` | GitHub CLI（Release 二进制） |
+| `delta` | `0.18.2` | `x86_64-apple-darwin` | Git Diff 语法高亮（`0.19.0+` 起停更 Intel 包，固定 **`0.18.2`**） |
+| `fnm` | `1.39.0` | `fnm-macos.zip`（Universal） | Node.js 版本管理器（替代 `nvm`） |
+| `fzf` | `0.75.0` | `darwin_amd64` | 终端模糊搜索（`Ctrl+R` / `Ctrl+T` / `Alt+C`） |
+| `zoxide` | `0.10.0` | `x86_64-apple-darwin` | 智能目录跳转（替代 `autojump`） |
+| `ghostty` | `1.4.0` | `Universal` `.dmg` | 软链接至 `/Applications/Ghostty.app/Contents/MacOS/ghostty` |
+| `mo` / `mole` | `Mole CLI` | Universal / Intel 脚本安装 | 系统清理、空间分析与卸载工具（配合 `/Applications/Mole.app` 使用） |
+
+初始化目录与清理工具安装：
+```bash
+mkdir -p ~/.local/bin
+# 按官方脚本安装 Mole CLI（同时在 /Applications 安装图形端 Mole.app）
+curl -fsSL https://raw.githubusercontent.com/tw93/Mole/main/install.sh | bash -s -- --prefix "$HOME/.local/bin"
+```
 
 ---
 
-## 初步发现的文档过时 / 需调整项（待执行时逐一确认补充）
+## 第 4 步：终端与编辑器配置（Ghostty + Zsh + Vim）
 
-### 1. `1 - 重装mac OS.md`
-- 仅包含 Catalina 及更早版本的 `createinstallmedia` 命令，缺少 macOS 14 (Sonoma) 及 Apple Silicon「抹掉所有内容和设置」方式。
-- 文末链接仍指向旧用户名 `suvin7`。
+### 4.1 安装 Ghostty 与 FiraCode Nerd Font
+1. 从官网下载安装 `Ghostty.app`（当前 `1.4.0`），并创建 CLI 软链接：
+   ```bash
+   ln -sf "/Applications/Ghostty.app/Contents/MacOS/ghostty" ~/.local/bin/ghostty
+   ```
+2. 从 Nerd Fonts Release 下载 `FiraCode` 压缩包，将 6 个字重安装至 `~/Library/Fonts/`：
+   - `FiraCodeNerdFont-Light.ttf` / `Regular.ttf` / `Retina.ttf` / `Medium.ttf` / `SemiBold.ttf` / `Bold.ttf`
 
-### 2. `2 - 系统设置.md` & `tools/mac tips.md`
-- 原文档基于 macOS 10.14 Mojave，macOS 14「系统设置」UI 与菜单路径变化很大（例如触控板三指拖移在「辅助功能 → 指针控制 → 触控板选项」、密码锁定在「锁定屏幕」、节能合并进「电池 / 锁定屏幕」等）。
-- 依赖的 `Brooklyn.saver` 需确认是否兼容 macOS 14。
-- **`tools/mac tips.md` 排查结果**（共 6 条命令）：
-  - **Finder 顶部显示路径**（`defaults write com.apple.finder _FXShowPosixPathInTitle -bool YES`）：仍有效，但原文档漏了 `killall Finder` 使之立即生效。
-  - **调整 Launchpad 行列数**：原文档注释把 `springboard-rows`（行数）和 `springboard-columns`（列数）写反了。
-  - **屏蔽系统更新红点**（`AttentionPrefBundleIDs 0`）：新版本 macOS 上基本已失效，且原文档未写 `killall Dock`。
-  - **充电提示音**（`PowerChime`）：可按需选择开关。
-  - **iOS 断连修复**（`sudo killall -STOP -c usbd`）：属于临时排障命令，重装时无需执行。
+### 4.2 Ghostty 配置文件（`~/.config/ghostty/config`）
+> 注：macOS 上路径为 `~/.config/ghostty/config`（Ghostty 同时支持 `~/Library/Application Support/com.mitchellh.ghostty/config`，本机统一保存在 `~/.config/ghostty/config`）。
 
-### 3. `3 - vim设置.md`
-- 基本可用，暂无明显过时项。
+```ini
+theme = Dracula
+font-family = FiraCode Nerd Font
+font-size = 13
+background-opacity = 0.88
+background-blur-radius = 20
+macos-titlebar-style = tabs
+quit-after-last-window-closed = true
+confirm-close-surface = false
+window-padding-x = 8
+window-padding-y = 6
+shell-integration = zsh
+keybind = alt+left=esc:b
+keybind = alt+right=esc:f
+```
 
-### 4. `4 - 安装 Homebrew.md`
-- 若为 Apple Silicon Mac，安装路径变为 `/opt/homebrew`，安装后需执行 `brew shellenv` 写入 `~/.zprofile`。
+### 4.3 安装 Oh My Zsh、主题与插件
+1. macOS 默认 Shell 已是 `/bin/zsh`，无需 `chsh`；无交互安装 Oh My Zsh：
+   ```bash
+   RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+   ```
+2. 复制自定义主题 `myys`（基于 `ys` 去掉 `@%m` 主机名）到 `~/.oh-my-zsh/custom/themes/myys.zsh-theme`。
+3. 克隆常用插件：
+   ```bash
+   ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+   git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+   git clone https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+   ```
+4. 从 GitHub Release 下载 `zoxide` 与 `fzf` 预编译二进制放至 `~/.local/bin/` 并赋予 `chmod +x`。
 
-### 5. `5 - iTerm安装与设置.md`
-- `brew cask install iterm2` 已废弃，应改为 `brew install --cask iterm2`。
-- macOS 14 默认 Shell 已是 `zsh`，无需 `chsh -s /bin/zsh`。
-- 字体 `FiraCode` 可直接用 `brew install --cask font-fira-code` 安装。
-- `Dracula.itermcolors` 是 iTerm2 配色文件，放到 `~/.oh-my-zsh/custom/themes` 并不起作用，应直接导入 iTerm2。
-- 第 5 步和第 9 步重复写了「安装 nvm」。
-- `.zshrc` 中部分 alias 已过时（如 `vue init webpack`、`create-react-app`、`spctl --master-disable` 在新系统有变化），代理端口 `7890` 需与当前代理软件核对。
+### 4.4 配置 `~/.zprofile`、`~/.zshrc` 与 `~/.vimrc`
 
-### 6. `6 - Git的安装与设置.md`
-- Apple Silicon 下 Homebrew 的 Git 路径为 `/opt/homebrew/bin/git`（非 `/usr/local/bin/git`）。
-- SSH 密钥 GitHub 现推荐使用 `ed25519`（`ssh-keygen -t ed25519 -C "..."`）替代 `rsa -b 4096`。
-- `~/.ssh/config` 中代理端口为 `51837`，与第 5 步 `.zshrc` 的 `7890` 不一致，需统一。
+**`~/.zprofile`**：
+```bash
+# Load .zshrc if not already loaded in non-interactive login shells
+if [ -z "${HTTP_PROXY}" ] && [ -f "$HOME/.zshrc" ]; then
+  source "$HOME/.zshrc"
+fi
 
-### 7. `7 - Alfred4设置.md` → 升级为 `7 - Alfred 5 设置.md`
-- Alfred 已升级为 **Alfred 5**（已含 Powerpack）；建议在 `Advanced → Syncing` 开启配置同步（如同步至 iCloud Drive），日后重装免重配。
-- 精简清理过时的国内娱乐/购物搜索项，并修复 GitHub 搜索多余 `&amp;ref=opensearch`，补齐每条搜索触发关键词。
+# Local user binaries (e.g., Mole, zoxide, fzf, fnm)
+case ":$PATH:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
+```
 
-### 8. `8 - Typora & PicGo 设置.md`
-- ✅ 已完成 – PicGo 使用 GitHub 图床 `SuvinLin/picBed`（`master`，Fine-grained token，仅 Contents 读写），CDN `https://fastly.jsdelivr.net/gh/SuvinLin/picBed@master`，代理 `127.0.0.1:7890`，时间戳重命名；Typora 偏好已设为 `image_uploader=picgo-app`、`allow_image_upload=1`。上传已实测成功。
-- `cdn.jsdelivr.net` 在国内网络环境下稳定性较差，可考虑替代方案或确认是否仍使用。
+**`~/.zshrc`**：
+```bash
+# FlClash Proxy Configuration (mixed-port: 7890)
+export FLCLASH_PORT=7890
 
-### 9. `9 - node 环境配置.md`
-- 原 `nvm install node --lts` 已替换为 Rust 实现的 **`fnm`**（秒级启动，兼容 `.nvmrc` / `.node-version`）：已从官方 GitHub Release 安装 `v1.39.0` 预编译二进制至 `~/.local/bin/fnm`，`.zshrc` 已预置 `eval "$(fnm env --use-on-cd --shell zsh)"`，第 9 步直接执行 `fnm install --lts`。
+proxy_on() {
+  export http_proxy="http://127.0.0.1:${FLCLASH_PORT}"
+  export https_proxy="http://127.0.0.1:${FLCLASH_PORT}"
+  export all_proxy="socks5://127.0.0.1:${FLCLASH_PORT}"
+  export HTTP_PROXY="http://127.0.0.1:${FLCLASH_PORT}"
+  export HTTPS_PROXY="http://127.0.0.1:${FLCLASH_PORT}"
+  export ALL_PROXY="socks5://127.0.0.1:${FLCLASH_PORT}"
+  export no_proxy="localhost,127.0.0.1,::1,*.local"
+  export NO_PROXY="localhost,127.0.0.1,::1,*.local"
+}
+
+proxy_off() {
+  unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY
+}
+
+# Enable proxy environment variables by default for Antigravity (language_server) & CLI tools
+proxy_on
+
+# Local user binaries (Mole, zoxide, fzf, fnm)
+case ":$PATH:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
+
+# Path to your Oh My Zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+# Custom copy of ys theme without @hostname
+ZSH_THEME="myys"
+
+# Plugins (zsh-syntax-highlighting must stay last)
+plugins=(
+  git
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+)
+
+source "$ZSH/oh-my-zsh.sh"
+
+# fzf keybindings & completion (Ctrl+R history search, Ctrl+T file search, Alt+C cd)
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
+fi
+
+# zoxide (replaces autojump: `z <keyword>` or `zi` with fzf)
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+fi
+
+# fnm (Fast Node Manager, replaces nvm; auto-switches on .nvmrc / .node-version)
+if command -v fnm >/dev/null 2>&1; then
+  eval "$(fnm env --use-on-cd --shell zsh)"
+fi
+
+# Git & terminal locale
+export LANG=en_US.UTF-8
+
+# Reset DNS cache
+alias dns="sudo killall -HUP mDNSResponder"
+
+# Git aliases
+alias gs="git status"
+alias ga="git add"
+alias gcm="git commit -m"
+alias gc="git clone"
+alias gl="git log"
+
+# npm aliases
+alias n="npm"
+alias nr="npm run"
+alias nl="npm ls --depth=0"
+alias nl-g="npm ls -g --depth=0"
+
+# Application permission & signing
+alias dis="sudo spctl --master-disable"
+alias en="sudo spctl --master-enable"
+alias sign="codesign --force --deep --sign - "
+
+# iOS USB connection workaround
+alias ios="sudo killall -STOP -c usbd"
+```
+
+**`~/.vimrc`**（原第 3 步已合并至此）：
+```vim
+" 语法高亮
+syntax on
+" 显示行号
+set nu
+" 智能缩进
+set smartindent
+" 不需要备份
+set nobackup
+" 显示标尺，就是在右下角显示光标位置
+set ruler
+```
 
 ---
 
-## 执行过程中的新增记录（随时补充）
+## 第 5 步：Git、GitHub CLI 与 SSH 配置
 
-### 第 2 步（系统设置 & `mac tips.md`）
-- **可脚本化优化（建议补充进 GitHub 文档）**：以下系统设置已通过命令行直接写入：
-  - 触控板轻点点按 + 三指拖移
-  - 触发角左上角启动屏幕保护程序（`com.apple.dock wvous-tl-corner -int 5`）
-  - 屏保闲置永不 + 锁屏立即输密码（`com.apple.screensaver`）
-  - 键盘关闭自动纠错/大写/句点/智能引号/破折号（`NSGlobalDomain`）
-  - 菜单栏电池显示百分比（`defaults -currentHost write com.apple.controlcenter BatteryShowPercentage -bool true`）
-- **DNS 调整**：由原 `8.8.8.8` 改为腾讯 DNS（`119.29.29.29`）和阿里 DNS（`223.5.5.5`），可用 `sudo networksetup -setdnsservers "Wi-Fi" 119.29.29.29 223.5.5.5`。
-- **Finder 顶部显示路径**：已执行并生效（文档需补充 `killall Finder`）。
-- **Launchpad 排列**：已设为 **7 行 7 列** 并重启 Dock 生效（文档需修正 `rows`/`columns` 写反的注释）。
-- **充电提示音（`PowerChime`）**：`defaults write com.apple.PowerChime ChimeOnAllHardware -bool true` 已写入（值为 `1`），但 macOS 14 上直接 `open /System/Library/CoreServices/PowerChime.app` 会报 `RBSRequestErrorDomain Code=5 / Launchd job spawn failed`，需重启或插拔电源验证是否已生效，文档需更新说明。
-- **菜单栏时钟**：macOS 14 已不支持完全隐藏，文档需更新。
-- **本机架构说明**：当前为 Intel（`x86_64`），后续文档可同时注明 Intel（`/usr/local`）与 Apple Silicon（`/opt/homebrew`）差异。
-- **iCloud 登录踩坑**：系统开启 HTTP/SOCKS 全局代理且忽略列表未放行 `*.apple.com`/`*.icloud.com` 时，iCloud 登录极易卡住或失败；可临时关闭代理或先登录 App Store 后重试。
-- **CommandLineTools 混装问题**：若此前残留旧版文件导致 `/Library/Developer/CommandLineTools/usr/include/swift/` 同时存在 `module.modulemap` 与 `bridging.modulemap`（触发 Swift 编译报错），可通过 `sudo rm -rf /Library/Developer/CommandLineTools && xcode-select --install` 彻底重装修复。
+### 5.1 安装新版 Git、`gh` 与 `delta`
+- **Git `2.56.1`（免 `sudo` 安装到 `~/.local/`）**：
+  下载 Git 官方源码后编译，并一并编译 macOS 钥匙串凭据助手（`2.56+` 在无 Rust 工具链时必须指定 `NO_RUST=1`）：
+  ```bash
+  make prefix="$HOME/.local" NO_GETTEXT=1 NO_TCLTK=1 NO_RUST=1 APPLE_COMMON_CRYPTO=YesPlease RUNTIME_PREFIX=1 -j4 all install
+  make -C contrib/credential/osxkeychain prefix="$HOME/.local" NO_GETTEXT=1 NO_TCLTK=1 NO_RUST=1 APPLE_COMMON_CRYPTO=YesPlease RUNTIME_PREFIX=1 install
+  ```
+- **`gh v2.105.0` & `delta 0.18.2`**：从 GitHub Release 下载二进制放入 `~/.local/bin/`。
+  > [!NOTE]
+  > `git-delta` 从 `0.19.0+` 起已停止提供 Intel `x86_64-apple-darwin` 预编译包，Intel Mac 固定使用 **`0.18.2`**；Apple Silicon Mac 可直接用新版 `aarch64-apple-darwin`。
 
-### 第 4 步（去 Homebrew / MacPorts 方案：预编译二进制 + 官网直装 + Mole）
-- **最终方案**：在 macOS 14 Intel 上放弃 Homebrew 与 MacPorts，不再维护重型包管理器：
-  1. **系统自带已够用**：`vim`、`/bin/zsh`（5.9）、`/usr/bin/git`（`2.39.5 Apple Git-154`）。
-  2. **GUI 应用**：iTerm2、FlClash、Alfred、Typora 等直接官网/Release 下载安装。
-  3. **现代单文件 CLI 工具**：统一将官方预编译 Release 二进制放入 `~/.local/bin/`（并在 `.zprofile` / `.zshrc` 加入 `PATH`），免 `sudo`、免编译、零依赖：
-     - `zoxide v0.10.0`、`fzf v0.75.0`、`fnm v1.39.0`
-     - `Mole CLI v1.73.0`（官方脚本 `install.sh --prefix "$HOME/.local/bin"`）+ 自建原生 macOS 图形端 `Mole.app`（`dist/Mole.app`）与 Antigravity Mole Skill（`~/.gemini/config/skills/mole/`）。
-- **MacPorts 实测踩坑记录（为什么不建议装）**：
-  - macOS 14 Intel 上安装 `zoxide` / `fnm` 时，因缺少预编译归档包直接触发本地从源码编译整个 `rust` + LLVM（耗时数小时），仅前置 C/C++ 编译依赖（`cmake`/`icu`/`autoconf` 等）就占了 `898 MB` `/opt/local` 空间。
-  - 若以后确实需要 MacPorts，务必加 `-b` 参数（`sudo port install -b <pkg>`）强制只用二进制包；且 `/opt/local/etc/macports/sources.conf` 中添加清华 TUNA 源时必须注释原官方 `[default]` 行防止重复警告。
+### 5.2 配置 `~/.gitconfig` 与 `~/.gitignore_global`
 
-### 第 5 步（iTerm2 + Zsh + Vim 合并）
-- **结构调整**：原第 3 步（`~/.vimrc`）直接合并进本步一起完成；原第 5 步中的「安装 nvm」与第 9 步重复，已从本步移除并由 `fnm` 替代归入第 9 步。
-- **无需 `chsh`**：macOS 14 默认 Shell 已是 `/bin/zsh`（zsh 5.9），文档中 `chsh -s /bin/zsh` 可删去或改为提示性说明。
-- **Oh My Zsh & `myys` 主题**：通过 `RUNZSH=no CHSH=no KEEP_ZSHRC=yes` 安装 Oh My Zsh，并将去掉 `@%m` 的 `myys.zsh-theme` 放入 `~/.oh-my-zsh/custom/themes/`（避免污染仓库 `themes/` 目录导致 `omz update` 冲突）。
-- **替代 `autojump` 为 `zoxide` + `fzf`**：`autojump` 自 2016 年停更且依赖 Python，改用 Rust 预编译版 **`zoxide v0.10.0`** + **`fzf v0.75.0`**（支持 `z`/`zi` 跳转与 `Ctrl+R`/`Ctrl+T`/`Alt+C` 模糊检索），`.zshrc` 中通过 `eval "$(zoxide init zsh)"` 与 `source <(fzf --zsh)` 启用，并保留 `zsh-autosuggestions` 与 `zsh-syntax-highlighting`（后者置于 `plugins` 末尾）。
-- **字体与配色修正**：
-  - 字体升级为 **FiraCode Nerd Font**（从 Nerd Fonts Release 下载标准 `FiraCodeNerdFont-*.ttf` 至 `~/Library/Fonts/`），同时保留连字并补齐终端图标，替换原普通版 `FiraCode`。
-  - `Dracula.itermcolors` 为 iTerm2 配色文件，放入 `~/.config/iterm2/Dracula.itermcolors` 并通过 `open` 导入（修正原文档误放入 `~/.oh-my-zsh/custom/themes` 的问题）。
-- **iTerm2 首选项自动化**：已通过 `defaults import com.googlecode.iterm2` 写入全部偏好（`QuitWhenAllWindowsClosed=true`、`PromptOnQuit=false`、`OnlyWhenMoreTabs=false`、`TabStyleWithAutomaticOption=5 (Minimal)`、`WindowNumber=false`、`Default` Profile 应用 `Dracula` 配色、`FiraCodeNF-Reg 13` + `ASCII Ligatures`、`Transparency=0.12`、以及 `⌥←`/`⌥→` 映射到 `Esc+ b`/`Esc+ f`）。
-- **`.zshrc` 更新**：保留 FlClash 代理配置（`7890` 端口、`proxy_on`/`proxy_off`）与 `~/.local/bin` PATH；预置 `fnm env --use-on-cd --shell zsh`（替代 `nvm`）；清理了原 Homebrew / MacPorts 及过时前端脚手架 alias。
+**`~/.gitconfig`**：
+```ini
+[user]
+	name = suvin
+	email = linsuvin@gmail.com
+[core]
+	quotepath = false
+	autocrlf = input
+	excludesfile = /Users/suvin/.gitignore_global
+	pager = delta
+[i18n]
+	commitEncoding = utf-8
+	logOutputEncoding = utf-8
+[init]
+	defaultBranch = main
+[push]
+	autoSetupRemote = true
+[fetch]
+	prune = true
+[credential]
+	helper = osxkeychain
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+	dark = true
+	syntax-theme = Dracula
+	line-numbers = true
+[merge]
+	conflictStyle = zdiff3
+[diff]
+	colorMoved = default
+```
 
-### 第 6 步（Git v2.56.1 + `gh` + `delta` + SSH `ed25519`）
-- **Git 最新版安装（免 `sudo`、去 Homebrew）**：拉取 Git 官方稳定版 `v2.56.1` 源码并指定 `NO_GETTEXT=1 NO_TCLTK=1 NO_RUST=1 APPLE_COMMON_CRYPTO=YesPlease RUNTIME_PREFIX=1` 编译安装至 `~/.local/bin/git`（注：`2.56+` 默认开启可选 Rust 组件，无 `cargo` 时必须加 `NO_RUST=1`；同时传入相同 flag 编译 `contrib/credential/osxkeychain` 凭据助手至 `~/.local/libexec/git-core/`），自动优先于系统自带 `/usr/bin/git`（`2.39.5`）。
-- **新增现代 Git 生态工具（放入 `~/.local/bin/`）**：
-  - `gh v2.105.0`（GitHub CLI，可用于命令行登录并自动上传 SSH 公钥、建仓库、提 PR）。
-  - `delta 0.18.2`（`git-delta` 美化 diff 配色为 `Dracula` 并启用行号；注：`0.19.0+` 起官方已停止发布 Intel `x86_64-apple-darwin` 预编译包，Intel Mac 固定使用 `0.18.2`）。
-- **`.gitconfig` 现代全局项**：除原文档 `user.name`/`user.email`/`core.quotepath`/`i18n.*` 外，新增 `init.defaultBranch main`、`push.autoSetupRemote true`、`fetch.prune true`、`core.autocrlf input`、`credential.helper osxkeychain`、`merge.conflictStyle zdiff3`、`diff.colorMoved default` 及 `delta` 集成。
-- **`.gitignore_global` 精简**：移出原文档中的 `node_modules`（改由各项目自身 `.gitignore` 管理，避免掩盖漏配），保留 `.DS_Store`、`._*`、`.Spotlight-V100`、`.Trashes`、`.vscode/`、`.idea/`、`*.swp`、`*.swo`。
-- **SSH 密钥与代理修正**：
-  - 由 `rsa -b 4096` 升级为 **`ed25519`**（`~/.ssh/id_ed25519`）。
-  - `~/.ssh/config` 加入 `AddKeysToAgent yes` + `UseKeychain yes`，并改为 `HostName ssh.github.com` + `Port 443` 即可稳定握手连通；实测在 FlClash 开启 TUN/代理时若再强加 `ProxyCommand nc` 走 `127.0.0.1:7890`（无论是 SOCKS5 还是 HTTP CONNECT）会触发 `kex_exchange_identification: Connection closed`，因此将 `ProxyCommand nc -X 5 -x 127.0.0.1:7890 %h %p`（已去掉冗余 `-v`）改为注释备用。
+**`~/.gitignore_global`**（不再全局忽略 `node_modules`，交给各项目自身 `.gitignore` 控制）：
+```gitignore
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
 
-### 第 7 步（Alfred 5 设置）
-- **快捷键与更新**：`hotkey/prefs.plist` 为 `⌘ 双击`（`double tap`），`SUEnableAutomaticChecks` 与 `SUAutomaticallyUpdate` 保持为 `False`。
-- **Default Results**（`features/defaultresults/prefs.plist`）：已勾选 Folders / TextFiles / Archives / Documents / Images / Contacts / Preferences，取消勾选 `showAppleScripts`。
-- **Web Search 优化（精简为 5 条，写入 `features/websearch/prefs.plist`）**：新增 `gg`、`npm`，移除 `bd`/`bk`/`zh`/`jd`/`tb`/`db`/`zdm`/`wb`/`优酷`/`爱奇艺`，修正 GitHub URL 并补全触发关键词：
-  - `gg`（Google）、`gh`（GitHub 仓库）、`mdn`（MDN）、`npm`（npm 包）、`bili`（Bilibili）。
-- **Terminal / Shell**（`features/terminal/prefs.plist`）：`application = 1 (Custom)`，写入 iTerm2 AppleScript 脚本（`on alfred_script(q)`）。
-- **外观主题**：已通过 AppleScript `set theme "Alfred macOS Dark"` 切换为 `Alfred macOS Dark`。
-- **界面收尾与建议**：`General → Launch Alfred at login` 与 `Features → Web Bookmarks`（勾选 `Google Chrome Bookmarks`、keyword `bm`）由用户在 Alfred Preferences 界面确认；顺便建议在 `Advanced → Syncing` 开启配置同步并开启 Powerpack 剪贴板历史。
+# Editors & IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+```
+
+### 5.3 生成 `ed25519` SSH 密钥与配置 `~/.ssh/config`
+```bash
+ssh-keygen -t ed25519 -C "linsuvin@gmail.com"
+eval "$(ssh-agent -s)"
+ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+```
+
+**`~/.ssh/config`**（走 `ssh.github.com:443` 直连即可；开启 FlClash TUN 模式时若再套 `ProxyCommand nc` 反而容易握手中断，故仅作注释备用）：
+```sshconfig
+Host *
+  AddKeysToAgent yes
+  UseKeychain yes
+
+Host github.com
+  HostName ssh.github.com
+  Port 443
+  User git
+  IdentityFile ~/.ssh/id_ed25519
+  # 如未开启 TUN 且网络无法直连 GitHub 443 端口时再取消注释：
+  # ProxyCommand nc -X 5 -x 127.0.0.1:7890 %h %p
+```
+
+登录 GitHub CLI 并验证 SSH：
+```bash
+gh auth login   # 或将 ~/.ssh/id_ed25519.pub 添加到 GitHub SSH Keys
+ssh -T git@github.com
+```
+
+---
+
+## 第 6 步：效率启动器 — SW Tools（替代 Alfred & 聚焦）
+
+原 **Alfred 5 + 系统聚焦搜索** 已全面替换为自研轻量原生启动器 **SW Tools**（安装包约 844 KB，空载内存约 24 MB，采用常驻引擎 Worker + 懒加载面板）。
+
+### 6.1 源码构建与安装
+- 源码目录：`/Users/suvin/.gemini/antigravity/scratch/QuickBar`（主程序 `src/main.m`、后端引擎 `Resources/engine.py`）
+- 安装路径：`/Applications/SW Tools.app`
+```bash
+cd /Users/suvin/.gemini/antigravity/scratch/QuickBar
+./build.sh
+open -a "/Applications/SW Tools.app"
+```
+> [!IMPORTANT]
+> 每次执行 `./build.sh` 本地重新签名后，请确认在「系统设置 → 隐私与安全性 → 辅助功能」中重新勾选/添加 `SW Tools`，否则全局双击 `⌘` 不会触发；开机自启可通过状态栏图标菜单「开机自启动」（原生 `SMAppService`）一键开关。
+
+### 6.2 核心快捷键与内置指令
+
+| 分类 | 触发方式 / 关键字 | 说明 |
+| --- | --- | --- |
+| **全局呼出 / 操作** | `双击 ⌘` / `⌥ + O` | 呼出面板 / 直达剪贴板历史；`⌘1~9` 速选、`⌥+Enter` 备选、`Esc` 退出并清空上次操作 |
+| **应用与系统设置** | 直接输入名称/拼音/缩写 | 搜本机 App（支持别名如 `wx`/`vsc`/`zd`/`sz` 等）与系统设置面板，按使用频次智能加权 |
+| **文件搜索** | `f 关键词` 或 `空格 + 关键词` | 极速搜索本机文件（回车打开、`⌥+Enter` 在 Finder 定位） |
+| **剪贴板历史** | `cb [关键词]`、`cc` | 支持文本与图片双栏大图预览（`⌘P` 置顶、`⌘⌫` 单条删除）；`cc` 清空未置顶或 `⌥+Enter` 全清 |
+| **Snippets 展开** | `sn [关键词]` / 全局触发词 | 全局任意输入框打字自动展开（默认含 `;mail`、`;gh`、`!date`、`!now`） |
+| **Finder / 终端联动** | `nf`、`nfo`、`code`、`ft`、`tf` | 当前 Finder 目录新建文件并打开、VS Code 打开选中项、Ghostty ↔ Finder 目录互跳 |
+| **开发与实用工具** | `enc`、`json`、`uuid`、`ts`、`color`、`tr`、`short`、`qr`、`kill`、`bm` | 编解码/哈希、JSON 格式化、时间戳、颜色转换、中英翻译、短链、弹窗内高清二维码、结束进程、Chrome 书签 |
+| **网页搜索** | `gg` / `gh` / `mdn` / `npm` / `bili` + 词 | 与原 Alfred 精简版 5 条快捷搜索保持一致 |
+
+### 6.3 配置与同步目录
+- **本地运行缓存**：`~/.config/quickbar/`（`clipboard.json`、`clipboard_images/`、`usage.json`、`apps_cache.json`）
+- **OneDrive 跨机同步配置**：`~/OneDrive/quickbar config/`
+  - `snippets.json`（文本片段与全局触发词）
+  - `websearches.json`（自定义网页搜索关键词）
+  - `settings.json`（工具配置）
+
+---
+
+## 第 7 步：Node.js 环境配置（`fnm` 替代 `nvm`）
+
+原 `nvm` 已被 Rust 编写的 **`fnm`**（`v1.39.0`）替代，`.zshrc` 中已配置 `eval "$(fnm env --use-on-cd --shell zsh)"`，切换进入含 `.nvmrc` 或 `.node-version` 的目录会自动切换版本。在 Intel Mac 上 `fnm` 会自动拉取 `darwin-x64` 架构的 Node 二进制包。
+
+```bash
+# 下载 fnm 预编译二进制至 ~/.local/bin/fnm 后执行：
+fnm install --lts
+fnm default lts-latest
+
+# 核对版本与架构（当前本机输出）
+node -v               # v26.13.1
+node -p process.arch  # x64
+npm -v                # 11.20.0
+```
+> 注：如需切换国内镜像，可按需临时或全局设置 `npm config set registry https://registry.npmmirror.com`。
+
+---
+
+## 第 8 步：写作与图床配置（Typora + PicGo）
+
+1. **图床仓库**：GitHub 私有/公开图床仓库 `SuvinLin/picBed`（分支 `master`，Fine-grained PAT 仅授予 Contents 读写权限）。
+2. **PicGo 配置**：
+   - 图床类型：GitHub
+   - 自定义域名（CDN）：`https://fastly.jsdelivr.net/gh/SuvinLin/picBed@master`
+   - 代理：`http://127.0.0.1:7890`
+   - 上传设置：开启「时间戳重命名」。
+3. **Typora 偏好设置 → 图像**：
+   - 插入图片时：**上传图片**
+   - 上传服务：**PicGo.app**
+   - 验证「验证图片上传选项」通过即可写作时自动贴图上传。
+
+---
+
+## 第 9 步：当前已安装软件总清单（按分类整理）
+
+以下为当前 `/Applications`（及 `~/Applications`）中全部已装软件（重装下载安装包时均优先选 **Intel / `x64` / Universal** 版本）：
+
+| 分类 | 已安装应用 | 备注 |
+| --- | --- | --- |
+| **开发与 AI 编程** | `Visual Studio Code`、`Antigravity`、`Trae CN`、`HBuilderX`、`MiniMax Code`、`WorkBuddy`、`wechatwebdevtools`、`Ghostty`、`Termius`、`Charles` | 主力代码、小程序调试、终端、SSH 与抓包 |
+| **AI 助手** | `ChatGPT`、`Doubao`（含 `~/Applications/Doubao Apps`） | 桌面端 AI 工具 |
+| **效率与系统工具** | `SW Tools`、`Mole`、`Snipaste`、`Status Trio`、`FlClash`、`MacZip`、`Tiny Image`、`LocalSend`、`UURemote`、`小米互联服务` | 启动器、清理、截图、状态栏监控、代理、解压、压缩图、局域网/远程互联 |
+| **写作与办公** | `Typora`、`PicGo`、`wpsoffice`、`Microsoft OneNote`、`Microsoft Outlook` | Markdown 写作图床、文档套件、笔记与邮件 |
+| **浏览器、通讯与网盘** | `Google Chrome`、`Safari`、`WeChat`、`QQ`、`Telegram`、`OneDrive`、`aDrive`（阿里云盘）、`BaiduNetdisk_mac`、`QuarkCloudDrive` | OneDrive 承担 `quickbar config` 等配置同步 |
+| **影音与下载** | `IINA`、`NeteaseMusic`、`Thunder`（迅雷）、`TunesKit Video Cutter`、`抖音`、`红果短剧` | 本地视频播放、音乐与下载剪辑 |
+
+---
+
+## 重装速查 Checklist（新机恢复顺序）
+
+1. 系统初始化 + 安装 **FlClash**（`7890`）+ 登录 Apple 账户 + 安装 **OneDrive** 并建 `~/OneDrive` 软链接。
+2. `xcode-select --install`，执行第 2 步系统设置 `defaults` 脚本与腾讯/阿里 DNS。
+3. 建立 `~/.local/bin`，放入 `fnm`、`fzf`、`zoxide`、`gh`、`delta`、`mole`，编译安装 `git 2.56.1`；写入 `~/.gitconfig`、`~/.gitignore_global` 与 `~/.ssh/config`。
+4. 安装 **Ghostty** + **FiraCode Nerd Font** + **Oh My Zsh**（`myys` + 插件），还原 `~/.config/ghostty/config`、`~/.zprofile`、`~/.zshrc`、`~/.vimrc`。
+5. 执行 `fnm install --lts` 配好 Node.js；从源码构建安装 **SW Tools** 并开启辅助功能与开机自启（自动拉取 OneDrive 同步配置）。
+6. 装好 **Typora + PicGo**、开发 IDE 及第 9 步常用软件清单。
